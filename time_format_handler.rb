@@ -1,22 +1,16 @@
 class TimeFormatHandler
   FORMATS = {year: "%Y", month: "%m", day: "%d", hour: "%H", minute: "%M", second: "%S"}.freeze
 
+  attr_reader :formats, :unknown_formats
+
   def initialize(input_string)
     @input_string = input_string
 
     check_formats
   end
 
-  def success?
-    @unknown_formats.empty?
-  end
-
   def result
-    if success?
-      Time.now.strftime(@formats.join('-'))
-    else
-      "Unknown time format #{@unknown_formats}"
-    end
+    Time.now.strftime(@formats.join('-'))
   end
 
   private

@@ -6,9 +6,7 @@ class App
     @response = Rack::Response.new
 
     if @request.path_info == "/time"
-      @handler = TimeFormatHandler.new(@request.params["format"])
-      status = @handler.success? ? 200 : 400
-      compose_response(status, "#{@handler.result}\n")
+      time_response(TimeFormatHandler.new(@request.params["format"]))
     else
       compose_response(404, "Unknown resource '#{@request.path_info}'\n")
     end
@@ -21,6 +19,14 @@ class App
     @response.write "#{text}"
     @response.headers['Content-Type'] = 'text/plain'
     @response.finish
+  end
+
+  def time_response(handler)
+    if handler.unknown_formats.empty?
+      compose_response(200, "#{handler.result}\n")
+    else
+      compose_response(400, "Unknown time format #{handler.unknown_formats}\n")
+    end
   end
 end
 
